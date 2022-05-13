@@ -39,8 +39,10 @@ static int ParseDbLine(const char *buf, uint16_t *dbIdx)
 
     int n = 0;
     while (*p) {
-        if (!isdigit(p[0]))
-            break;
+        if (!isdigit(p[0])) {
+            p++;
+            continue;
+        }
         int begin, end;
         begin = strtol(p, &p, 0);
         if (*p != '-')
@@ -593,10 +595,26 @@ int DbConfig::parse_db_config(DTCConfig* raw, int i_server_type = 0)
         }
 
         cp = raw->get_str_val(sectionStr, "database_index");
+        // int idbIdxlen = strlen(cp) + 1;
+        // int idbStIdx = -1;
+        // int idbEdIdx = -1;
+        // if (sscanf(cp ?: "", "[%u-%u]", &idbStIdx, &idbEdIdx) != 2 ||
+        //   -1 == idbStIdx || -1 == idbEdIdx) {
+        //     log4cplus_error(
+        //         "invalid [database_index].database_number = %s",
+        //         cp);
+        //     FREE_IF(cp);
+        //     return -1;
+        // }
+        // FREE_IF(cp);
+        // cp = (char *)MALLOC(idbIdxlen);
+        // snprintf(cp, idbIdxlen, "[%d-%d]", idbStIdx,idbEdIdx);
+
         if (!cp || !cp[0])
             cp = "[0-0]";
 
         m->dbCnt = ParseDbLine(cp, m->dbIdx);
+        FREE_IF(cp);
 
         for (int j = 0; j < m->dbCnt; j++) {
             if (m->dbIdx[j] >= database_max_count) {
