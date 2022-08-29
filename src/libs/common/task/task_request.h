@@ -27,6 +27,11 @@ class NCRequest;
 class AgentMultiRequest;
 class ClientAgent;
 
+struct HitImage {
+	std::vector<RowValue> before_image;
+	std::vector<RowValue> after_image;
+};
+
 class TaskOwnerInfo {
     private:
 	const struct sockaddr *clientaddr;
@@ -319,6 +324,9 @@ class DTCJobOperation : public DtcJob,
 	unsigned int resource_id;
 	DecoderBase *resource_owner;
 	uint32_t resource_seq;
+	 
+	public:
+	HitImage hit_image;
 
     private:
 	/*use as async hotback job*/

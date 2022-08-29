@@ -172,6 +172,13 @@ class RowValue : public TableReference {
 		if (value == NULL)
 			throw std::bad_alloc();
 		memcpy(value, r.value, sizeof(DTCValue) * (num_fields() + 1));
+		for (int i = 0; i < num_fields() + 1; ++i) {
+			if (DField::String == r.field_type(i) ||
+			DField::Binary == r.field_type(i)) {
+				value[i].str.ptr = calloc(r.value[i].str.len , sizeof(char));
+				memcpy(value[i].str.ptr , r.value[i].str.ptr , r.value[i].str.len);
+			}
+		}
 	}
 
 	virtual ~RowValue()

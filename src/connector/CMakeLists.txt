@@ -21,6 +21,7 @@ LINK_DIRECTORIES (
     ${PROJECT_SOURCE_DIR}/src/libs/log4cplus/libs
     ${PROJECT_SOURCE_DIR}/src/libs/hsql/libs
     ${PROJECT_SOURCE_DIR}/src/libs/yaml-cpp/libs
+    ${PROJECT_SOURCE_DIR}/src/libs/api/binlite_api/libs
     ${PROJECT_SOURCE_DIR}/build/src/libs/common
     ${PROJECT_SOURCE_DIR}/build/src/core/lib
     ${PROJECT_SOURCE_DIR}/build/src/daemons
@@ -41,9 +42,12 @@ LINK_LIBRARIES(libcommon.a)
 LINK_LIBRARIES(libdaemons.a)
 LINK_LIBRARIES(libstat.a)
 LINK_LIBRARIES(libmysqlclient.a)
+LINK_LIBRARIES(libbinliteApi.so) 
+LINK_LIBRARIES(libprotobuf.so) 
+LINK_LIBRARIES(libprotoc.so) 
 
 ADD_DEFINITIONS ("-g -fPIC -fpermissive -std=gnu++11 -DOMN_PLATFORM_UNIX -Wl,--no-undefined -Xlinker -zmuldefs")
 
 ADD_EXECUTABLE (connector ${SRC_LIST})
 
-TARGET_LINK_LIBRARIES(connector  libdtcd.a libdaemons.a libstat.a libcommon.a liblog4cplus.a  libyaml-cpp.a  libz64.a libmysqlclient.a)
+TARGET_LINK_LIBRARIES(connector  libdtcd.a libdaemons.a libstat.a libcommon.a liblog4cplus.a  libyaml-cpp.a  libz64.a libmysqlclient.a libbinliteApi.so libprotobuf.so libprotoc.so)

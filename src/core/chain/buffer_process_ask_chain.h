@@ -338,8 +338,8 @@ class BufferProcessAskChain : public JobAskInterface<DTCJobOperation>,
 
 	// hot back-up log
 	int write_hotbackup_log(const char *key, char *pstChunk,
-				unsigned int uiNodeSize, int iType);
-	int write_hotbackup_log(const char *key, Node &node, int iType);
+				unsigned int uiNodeSize, int iType , const HitImage& img = HitImage());
+	int write_hotbackup_log(const char *key, Node &node, int iType , const HitImage& img = HitImage());
 	int write_hotbackup_log(DTCJobOperation &job, Node &node, int iType);
 	int write_lru_hotbackup_log(const char *key);
 

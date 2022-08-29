@@ -189,7 +189,7 @@ int BufferProcessAskChain::write_lru_hotbackup_log(const char *key)
 
 int BufferProcessAskChain::write_hotbackup_log(const char *key, char *pstChunk,
 					       unsigned int uiNodeSize,
-					       int iType)
+					       int iType , const HitImage& img)
 {
 	if (!log_hotbackup_key_switch_) {
 		return 0;
@@ -201,6 +201,7 @@ int BufferProcessAskChain::write_hotbackup_log(const char *key, char *pstChunk,
 		return -1;
 	}
 
+	pJob->hit_image = img;
 	pJob->set_request_type(TaskTypeWriteHbLog);
 
 	HotBackTask &hotbacktask = pJob->get_hot_back_task();
@@ -228,8 +229,8 @@ int BufferProcessAskChain::write_hotbackup_log(const char *key, char *pstChunk,
 	return 0;
 }
 
-int BufferProcessAskChain::write_hotbackup_log(const char *key, Node &node,
-					       int iType)
+int BufferProcessAskChain::write_hotbackup_log(const char *key, Node &node ,
+					       int iType , const HitImage& img)
 {
 	if (!log_hotbackup_key_switch_) {
 		return 0;
@@ -243,13 +244,13 @@ int BufferProcessAskChain::write_hotbackup_log(const char *key, Node &node,
 			node.vd_handle());
 		uiNodeSize = pstChunk->node_size();
 	}
-	return write_hotbackup_log(key, (char *)pstChunk, uiNodeSize, iType);
+	return write_hotbackup_log(key, (char *)pstChunk, uiNodeSize , iType , img);
 }
 
 inline int BufferProcessAskChain::write_hotbackup_log(DTCJobOperation &job,
 						      Node &node, int iType)
 {
-	return write_hotbackup_log(job.packed_key(), node, iType);
+	return write_hotbackup_log(job.packed_key(), node, iType , job.hit_image);
 }
 
 void BufferProcessAskChain::purge_node_processor(const char *key, Node node)
@@ -1350,6 +1351,7 @@ BufferResult BufferProcessAskChain::buffer_delete_rows(DTCJobOperation &job)
 		cache_.purge_node_and_data(key, cache_transaction_node);
 		if (empty_node_filter_)
 			empty_node_filter_->SET(job.int_key());
+
 		// Hot Backup
 		Node stEmpytNode;
 		if (write_hotbackup_log(job, stEmpytNode,

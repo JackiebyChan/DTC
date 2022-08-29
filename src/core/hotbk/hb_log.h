@@ -25,6 +25,7 @@
 #include "table/hotbackup_table_def.h"
 #include "sys_malloc.h"
 #include "table/table_def.h"
+#include "cc_request.h"
 
 class BinlogWriter;
 class BinlogReader;
@@ -53,10 +54,18 @@ class HBLog {
 	int write_update_log(DTCJobOperation &job);
 	int write_update_key(DTCValue key, DTCValue v, int type);
 
-    private:
+private:
+	void set_binlite_request(const RowValue& cur_row,
+		 const DTCValue& , WDBinReq& req);
+
+	void set_binlite_request(const RowValue& cur_row,
+		 const DTCValue& , UpdateReq& req , bool is_bef = true);
+
+private:
 	DTCTableDefinition *tabledef_;
 	BinlogWriter *log_writer_;
 	BinlogReader *log_reader_;
+	Server o_server;
 };
 
 #endif

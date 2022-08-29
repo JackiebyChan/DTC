@@ -400,6 +400,8 @@ int RawDataProcess::do_delete(DTCJobOperation &job_op, Node *p_node,
 					iRet, raw_data_.get_err_msg());
 				return (-5);
 			}
+			job_op.hit_image.before_image.push_back(*stpNodeRow);
+
 			iAffectRows++;
 			rows_count_--;
 			if (uchRowFlags & OPER_DIRTY)
@@ -625,6 +627,8 @@ int RawDataProcess::do_append(DTCJobOperation &job_op, Node *p_node,
 		job_op.push_black_list_size(raw_data_.need_size());
 		return (-2);
 	}
+	// insert binlog lite
+	job_op.hit_image.before_image.push_back(*stpNodeRow);
 
 	if (job_op.resultInfo.affected_rows() == 0 || setrows == true)
 		job_op.resultInfo.set_affected_rows(1);
@@ -1045,8 +1049,13 @@ int RawDataProcess::do_update(DTCJobOperation &job_op, Node *p_node,
 		//如果不符合查询条件
 		if (job_op.compare_row(*stpTaskRow) == 0)
 			continue;
+		job_op.hit_image.before_image.push_back(*stpTaskRow);
 
 		job_op.update_row(*stpTaskRow); //修改数据
+		if (0 == ullAffectedrows) {
+			job_op.hit_image.after_image.push_back(*stpTaskRow);
+		}
+
 		ullAffectedrows++;
 
 		if (stpNodeTab != stpTaskTab)

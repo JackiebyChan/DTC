@@ -17,13 +17,17 @@ INCLUDE_DIRECTORIES(
     ../../libs/stat
     ../../libs/log4cplus/include
     ../../libs/zlib/include64
-    ../../libs/yaml-cpp/include)               
+    ../../libs/yaml-cpp/include
+    ../../libs/mysql/include/
+    ../../libs/api/binlite_api/include)
 
 #添加.so/.a文件搜索路径，相当于gcc -L
 LINK_DIRECTORIES(
     ${PROJECT_SOURCE_DIR}/src/libs/log4cplus/libs
     ${PROJECT_SOURCE_DIR}/src/libs/yaml-cpp/libs
     ${PROJECT_SOURCE_DIR}/src/libs/zlib/lib/
+    ${PROJECT_SOURCE_DIR}/src/libs/api/binlite_api/libs
+    ${PROJECT_SOURCE_DIR}/src/libs/protobuf/libs
     ${PROJECT_SOURCE_DIR}/build/src/libs/common
     ${PROJECT_SOURCE_DIR}/build/src/libs/stat
     ${PROJECT_SOURCE_DIR}/build/src/daemons)
@@ -32,6 +36,9 @@ LINK_DIRECTORIES(
 LINK_LIBRARIES(liblog4cplus.a) 
 LINK_LIBRARIES(libcommon.a)
 LINK_LIBRARIES(libyaml-cpp.a)
+LINK_LIBRARIES(libbinliteApi.so) 
+LINK_LIBRARIES(libprotobuf.so) 
+LINK_LIBRARIES(libprotoc.so) 
 LINK_LIBRARIES(libstat.a)
 LINK_LIBRARIES(libdaemons.a)
 LINK_LIBRARIES(libz64.a)
@@ -45,7 +52,7 @@ ADD_DEFINITIONS("-g -rdynamic -fPIC -fpermissive -std=gnu++11 -D_GLIBCXX_USE_CXX
 ADD_LIBRARY(dtcd_static ${SRC_LIST})
 
 #将目标文件与库文件链接
-TARGET_LINK_LIBRARIES(dtcd_static libdaemons.a libstat.a libcommon.a libyaml-cpp.a liblog4cplus.a libz64.a)
+TARGET_LINK_LIBRARIES(dtcd_static libdaemons.a libstat.a libcommon.a libyaml-cpp.a liblog4cplus.a libz64.a libbinliteApi.so libprotobuf.so libprotoc.so)
 SET_TARGET_PROPERTIES(dtcd_static PROPERTIES OUTPUT_NAME "dtcd")
 SET_TARGET_PROPERTIES (dtcd_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
